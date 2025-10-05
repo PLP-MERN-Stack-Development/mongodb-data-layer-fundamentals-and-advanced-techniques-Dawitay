@@ -1,198 +1,157 @@
-// insert_books.js - Script to populate MongoDB with sample book data
+// insert_books.js
+// Usage:
+// 1) install dependencies: npm install mongodb
+// 2) set MONGODB_URI if using Atlas, e.g. export MONGODB_URI="mongodb+srv://user:pass@cluster0.mongodb.net"
+// 3) node insert_books.js
 
-// Import MongoDB client
-const { MongoClient } = require('mongodb');
+import { MongoClient } from "mongodb";
 
-// Connection URI (replace with your MongoDB connection string if using Atlas)
-const uri = 'mongodb://localhost:27017';
+const uri = process.env.MONGODB_URI || "mongodb://localhost:27017";
+const dbName = "plp_bookstore";
+const collectionName = "books";
 
-// Database and collection names
-const dbName = 'plp_bookstore';
-const collectionName = 'books';
-
-// Sample book data
 const books = [
   {
-    title: 'To Kill a Mockingbird',
-    author: 'Harper Lee',
-    genre: 'Fiction',
-    published_year: 1960,
-    price: 12.99,
+    title: "Solar Analytics: A Practical Guide",
+    author: "A. Kebede",
+    genre: "Science",
+    published_year: 2021,
+    price: 34.99,
     in_stock: true,
-    pages: 336,
-    publisher: 'J. B. Lippincott & Co.'
+    pages: 220,
+    publisher: "GreenEnergy Press",
   },
   {
-    title: '1984',
-    author: 'George Orwell',
-    genre: 'Dystopian',
-    published_year: 1949,
-    price: 10.99,
-    in_stock: true,
-    pages: 328,
-    publisher: 'Secker & Warburg'
-  },
-  {
-    title: 'The Great Gatsby',
-    author: 'F. Scott Fitzgerald',
-    genre: 'Fiction',
-    published_year: 1925,
-    price: 9.99,
-    in_stock: true,
-    pages: 180,
-    publisher: 'Charles Scribner\'s Sons'
-  },
-  {
-    title: 'Brave New World',
-    author: 'Aldous Huxley',
-    genre: 'Dystopian',
-    published_year: 1932,
-    price: 11.50,
-    in_stock: false,
-    pages: 311,
-    publisher: 'Chatto & Windus'
-  },
-  {
-    title: 'The Hobbit',
-    author: 'J.R.R. Tolkien',
-    genre: 'Fantasy',
-    published_year: 1937,
-    price: 14.99,
+    title: "Intro to Python Data Analysis",
+    author: "D. Woldesenbet",
+    genre: "Technology",
+    published_year: 2023,
+    price: 29.5,
     in_stock: true,
     pages: 310,
-    publisher: 'George Allen & Unwin'
+    publisher: "TechBooks Ltd",
   },
   {
-    title: 'The Catcher in the Rye',
-    author: 'J.D. Salinger',
-    genre: 'Fiction',
-    published_year: 1951,
-    price: 8.99,
-    in_stock: true,
-    pages: 224,
-    publisher: 'Little, Brown and Company'
-  },
-  {
-    title: 'Pride and Prejudice',
-    author: 'Jane Austen',
-    genre: 'Romance',
-    published_year: 1813,
-    price: 7.99,
-    in_stock: true,
-    pages: 432,
-    publisher: 'T. Egerton, Whitehall'
-  },
-  {
-    title: 'The Lord of the Rings',
-    author: 'J.R.R. Tolkien',
-    genre: 'Fantasy',
-    published_year: 1954,
-    price: 19.99,
-    in_stock: true,
-    pages: 1178,
-    publisher: 'Allen & Unwin'
-  },
-  {
-    title: 'Animal Farm',
-    author: 'George Orwell',
-    genre: 'Political Satire',
-    published_year: 1945,
-    price: 8.50,
+    title: "Machine Learning with PyTorch",
+    author: "S. Alemu",
+    genre: "Technology",
+    published_year: 2022,
+    price: 45.0,
     in_stock: false,
-    pages: 112,
-    publisher: 'Secker & Warburg'
+    pages: 420,
+    publisher: "AI Books",
   },
   {
-    title: 'The Alchemist',
-    author: 'Paulo Coelho',
-    genre: 'Fiction',
-    published_year: 1988,
-    price: 10.99,
+    title: "Modern Database Design",
+    author: "K. Tesfaye",
+    genre: "Education",
+    published_year: 2019,
+    price: 39.99,
     in_stock: true,
-    pages: 197,
-    publisher: 'HarperOne'
+    pages: 380,
+    publisher: "EduPress",
   },
   {
-    title: 'Moby Dick',
-    author: 'Herman Melville',
-    genre: 'Adventure',
-    published_year: 1851,
-    price: 12.50,
+    title: "Deep Learning Essentials",
+    author: "M. Bekele",
+    genre: "Technology",
+    published_year: 2020,
+    price: 49.99,
+    in_stock: true,
+    pages: 500,
+    publisher: "DeepLearn Publishing",
+  },
+  {
+    title: "The Cryptocurrency Trader",
+    author: "D. Woldesenbet",
+    genre: "Finance",
+    published_year: 2018,
+    price: 24.0,
     in_stock: false,
-    pages: 635,
-    publisher: 'Harper & Brothers'
+    pages: 200,
+    publisher: "FinPress",
   },
   {
-    title: 'Wuthering Heights',
-    author: 'Emily Brontë',
-    genre: 'Gothic Fiction',
-    published_year: 1847,
-    price: 9.99,
+    title: "Web Development with JavaScript",
+    author: "A. Solomon",
+    genre: "Technology",
+    published_year: 2017,
+    price: 27.5,
     in_stock: true,
-    pages: 342,
-    publisher: 'Thomas Cautley Newby'
-  }
+    pages: 280,
+    publisher: "WebBooks",
+  },
+  {
+    title: "Data Visualization Patterns",
+    author: "L. Mengesha",
+    genre: "Design",
+    published_year: 2016,
+    price: 31.25,
+    in_stock: true,
+    pages: 240,
+    publisher: "VizHouse",
+  },
+  {
+    title: "Effective Project Management",
+    author: "R. Yohannes",
+    genre: "Business",
+    published_year: 2015,
+    price: 22.0,
+    in_stock: true,
+    pages: 190,
+    publisher: "BizBooks",
+  },
+  {
+    title: "Cloud Infrastructure Cookbook",
+    author: "N. Abebe",
+    genre: "Technology",
+    published_year: 2021,
+    price: 42.0,
+    in_stock: true,
+    pages: 360,
+    publisher: "CloudPress",
+  },
+  {
+    title: "Startups & Scaling",
+    author: "D. Woldesenbet",
+    genre: "Business",
+    published_year: 2024,
+    price: 38.0,
+    in_stock: true,
+    pages: 260,
+    publisher: "ScaleUp",
+  },
+  {
+    title: "Practical MongoDB",
+    author: "G. Tadesse",
+    genre: "Technology",
+    published_year: 2014,
+    price: 28.0,
+    in_stock: false,
+    pages: 320,
+    publisher: "NoSQL Press",
+  },
 ];
 
-// Function to insert books into MongoDB
-async function insertBooks() {
-  const client = new MongoClient(uri);
+async function main() {
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
   try {
-    // Connect to the MongoDB server
     await client.connect();
-    console.log('Connected to MongoDB server');
+    console.log("Connected to MongoDB:", uri);
 
-    // Get database and collection
     const db = client.db(dbName);
-    const collection = db.collection(collectionName);
+    const col = db.collection(collectionName);
 
-    // Check if collection already has documents
-    const count = await collection.countDocuments();
-    if (count > 0) {
-      console.log(`Collection already contains ${count} documents. Dropping collection...`);
-      await collection.drop();
-      console.log('Collection dropped successfully');
-    }
-
-    // Insert the books
-    const result = await collection.insertMany(books);
-    console.log(`${result.insertedCount} books were successfully inserted into the database`);
-
-    // Display the inserted books
-    console.log('\nInserted books:');
-    const insertedBooks = await collection.find({}).toArray();
-    insertedBooks.forEach((book, index) => {
-      console.log(`${index + 1}. "${book.title}" by ${book.author} (${book.published_year})`);
-    });
-
+    // Create DB & collection implicitly by inserting documents
+    const insertResult = await col.insertMany(books);
+    console.log(`Inserted ${insertResult.insertedCount} documents into ${dbName}.${collectionName}`);
   } catch (err) {
-    console.error('Error occurred:', err);
+    console.error("Error:", err);
   } finally {
-    // Close the connection
     await client.close();
-    console.log('Connection closed');
+    console.log("Connection closed.");
   }
 }
 
-// Run the function
-insertBooks().catch(console.error);
-
-/*
- * Example MongoDB queries you can try after running this script:
- *
- * 1. Find all books:
- *    db.books.find()
- *
- * 2. Find books by a specific author:
- *    db.books.find({ author: "George Orwell" })
- *
- * 3. Find books published after 1950:
- *    db.books.find({ published_year: { $gt: 1950 } })
- *
- * 4. Find books in a specific genre:
- *    db.books.find({ genre: "Fiction" })
- *
- * 5. Find in-stock books:
- *    db.books.find({ in_stock: true })
- */ 
+main();
